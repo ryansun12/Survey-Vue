@@ -13,7 +13,7 @@
       <!-- <div class="text1">体质测试</div> -->
       <button class="startbutton" @click="startQuiz">
         <div class="tophalf">
-          <img class="wechat" src="@/assets/wechat.png" />
+          <img class="wechat" src="@/assets/wechat.png"/>
           <span class="btntxt2">微信</span>
           <span class="btntxt3">现在</span>
         </div>
