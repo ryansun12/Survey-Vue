@@ -1,19 +1,23 @@
 <template>
   <div id="survey">
-    <div v-if="introstage" class="intro">
-      <img class="wifi" src="@/assets/wifi2.png" />
-      <img class="battery" src="@/assets/battery2.png" />
-      <img class="signal" src="@/assets/signal2.png" />
-      <div class="time2">{{timenow}}</div>
+    <div v-show="!isLoaded" class="loading"></div>
+    <div v-show="isLoaded">
+      <div id= "background"> <img src="../assets/wallpaper.jpg" @load="loaded">
+      <img src="../assets/lin.png" @load="loaded">
+      <img src="../assets/bruh.png" @load="loaded"></div>
+    <div v-show="introstage" class="intro">
+      <img class="wifi" src="../assets/wifi2.png" @load="loaded"/>
+      <img class="battery" src="../assets/battery2.png" @load="loaded"/>
+      <img class="signal" src="../assets/signal2.png" @load="loaded"/>
       <div class="carrier">中国移动</div>
       <div class="time">{{timenow}}</div>
       <div class="date">{{datenow}}</div>
       <!-- <img class="logo" src="@/assets/问止logo@2x.png" /> -->
       <br />
       <!-- <div class="text1">体质测试</div> -->
-      <button class="startbutton" @click="startQuiz">
+      <button class="startbutton" @click="startQuiz" >
         <div class="tophalf">
-          <img class="wechat" src="@/assets/wechat.png"/>
+          <img class="wechat" src="../assets/wechat.png" @load="loaded"/>
           <span class="btntxt2">微信</span>
           <span class="btntxt3">现在</span>
         </div>
@@ -22,40 +26,41 @@
       </button>
       <div class="shimmer" @click="startQuiz">点击解锁</div>
     </div>
-    <div v-if="questionstage" class="stage2">
+    <div v-show="questionstage" class="stage2">
      <!-- {{results}} -->
-      <img class="wifi" src="@/assets/wifi.png" />
-      <img class="battery" src="@/assets/battery.png" />
-      <img class="signal" src="@/assets/signal.png" />
       <div class="time2">{{timenow}}</div>
-      <img class="prev" src="@/assets/lessthan.png" @click="refresh" />
+      <img class="wifi" src="../assets/wifi.png" @load="loaded"/>
+      <img class="battery" src="../assets/battery.png" @load="loaded"/>
+      <img class="signal" src="../assets/signal.png" @load="loaded"/>
+      <div class="time2">{{timenow}}</div>
+      <img class="prev" src="../assets/lessthan.png" @click="refresh" @load="loaded"/>
       <div class="title">林医师👨‍⚕️</div>
-      <img class="dot" src="@/assets/dot.png" />
+      <img class="dot" src="../assets/dot.png" @load="loaded"/>
       <div class="container" id="container">
         <div class="prologue">
           {{datetime}}
           <br />You have added 林医师 as your WeChat contact.<br>Start Chatting!
         </div>
-        <img class="gif" src="@/assets/aaa.gif"/>
+        <img class="gif" src="../assets/aaa.gif" @load="loaded"/>
         <div
           v-for="(msg, index) in messages"
           class="message"
           v-bind:key="index"
           :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}">
-          <div v-if="msg.person==='doc'">
-            <img src="@/assets/lin.png" class="pic" />
+          <div v-show="msg.person==='doc'">
+            <img src="../assets/lin.png" class="pic" />
           </div>
-          <div v-if="msg.person==='you'">
-            <img src="@/assets/wallpaper.jpg" class="pic2" />
+          <div v-show="msg.person==='you'">
+            <img src="../assets/bruh.png" class="pic2" />
           </div>
           {{msg.body}}
         </div>
       </div>
       <div class="cbar">
-        <img class="talk" src="@/assets/talk.png" />
+        <img class="talk" src="../assets/talk.png" @load="loaded"/>
         <div class="blank"></div>
-        <img class="smile" src="@/assets/smile.png" />
-        <img class="plus" src="@/assets/plus.png" />
+        <img class="smile" src="../assets/smile.png" @load="loaded"/>
+        <img class="plus" src="../assets/plus.png" @load="loaded"/>
       </div>
       <div class="enter">问止输入法</div>
       <div class="keyboard">
@@ -85,6 +90,7 @@
       <canvas id="myChart" class="chart"></canvas>
       <br />
     </div>
+    </div>
   </div>
 </template>
 
@@ -93,15 +99,19 @@ import moment from "moment";
 import axios from "axios";
 import Chart from "chart.js";
 import { setTimeout } from "timers";
+// import JQuery from 'jquery';
 export default {
-  name: "axios-test",
+  name: "survey",
   data() {
     return {
+      count: 0,
+      isLoaded: false,
       messages: [
-        {body: '.', person:"doc"},
+        {body: '', person:"doc"},
         {body: '.', person:"a"},
         {body: '.', person:"a"},
-        {body: '.', person: "a"},
+        {body: '.', person:"a"},
+        {body: '.', person:"a"},
         {body:"接下来，为了了解你的健康状况，麻烦你简要回答一下如下问题:", person:"doc"}],
       timenow: "",
       datenow: "",
@@ -276,10 +286,14 @@ export default {
       });
     }, //end drawChart() function
     refresh() {
-      window.location.reload(true);
+      window.location.reload();
+    },
+    loaded(){
+      this.count++;
+      if(this.count == 16)
+      this.isLoaded = true;
     }
   },
-
   mounted() {
     // var a = location.href;
     // var b = a.substring(a.indexOf("?")+1);
@@ -290,12 +304,31 @@ export default {
 </script>
 
 <style lang="scss">
+#background{
+  display:none;
+}
+.loading{
+  position:absolute;
+  top: 30%;
+  left: 50%;
+  margin-left:-48px;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 .gif{
   -webkit-appearance:none;
   position:absolute;
   left:60px;
-  height:138px;
-  width:90px;
+  height:155px;
+  width:100px;
 }
 .enter{
   padding-top:5px;
@@ -327,10 +360,11 @@ export default {
   left: 10px;
 }
 .pic2 {
+  -webkit-appearance: none;
   margin-right:5px;
-  margin-top: -8px;
-  height: 35px;
-  width: 35px;
+  margin-top: -7px;
+  height: 37px;
+  width: 37px;
   position: absolute;
   border-radius: 5px 5px 5px 5px;
   right: 10px;
@@ -544,10 +578,10 @@ table tr {
 }
 .wifi {
   position: absolute;
-  top: 7px;
-  right: 35px;
-  width: 15px;
-  height: 15px;
+  top: 4px;
+  right: 32px;
+  width: 20px;
+  height: 20px;
 }
 .date {
   color: white;
@@ -590,6 +624,7 @@ table tr {
   font-size: 20px;
   color: #000000;
   text-align: center;
+  border-bottom: 0.1px solid rgb(221, 221, 221);
 }
 
 .wechat {
