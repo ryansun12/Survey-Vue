@@ -12,9 +12,7 @@
       <div class="carrier">中国移动</div>
       <div class="time">{{timenow}}</div>
       <div class="date">{{datenow}}</div>
-      <!-- <img class="logo" src="@/assets/问止logo@2x.png" /> -->
       <br />
-      <!-- <div class="text1">体质测试</div> -->
       <button class="startbutton" @click="startQuiz" >
         <div class="tophalf">
           <img class="wechat" src="../assets/wechat.png" @load="loaded"/>
@@ -27,7 +25,6 @@
       <div class="shimmer" @click="startQuiz">点击解锁</div>
     </div>
     <div v-show="questionstage" class="stage2">
-     <!-- {{results}} -->
       <div class="time2">{{timenow}}</div>
       <img class="wifi" src="../assets/wifi.png" @load="loaded"/>
       <img class="battery" src="../assets/battery.png" @load="loaded"/>
@@ -39,21 +36,17 @@
       <div class="container" id="container">
         <div class="prologue">
           {{datetime}}
-          <br />You have added 林医师 as your WeChat contact.<br>Start Chatting!
+          <br />You have added 林医师 as your WeChat contact. <br>Start Chatting!
         </div>
         <img class="gif" src="../assets/aaa.gif" @load="loaded"/>
-        <div
-          v-for="(msg, index) in messages"
-          class="message"
-          v-bind:key="index"
-          :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}">
-          <div v-show="msg.person==='doc'">
+        <div v-for="(msg, index) in messages" class="message"  v-bind:key="msg+index" :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}">
+          <div v-show="msg.person==='doc'" id="prof">
             <img src="../assets/lin.png" class="pic" />
           </div>
           <div v-show="msg.person==='you'">
             <img src="../assets/bruh.png" class="pic2" />
           </div>
-          {{msg.body}}
+          <div class="msg">{{msg.body}}</div>
         </div>
       </div>
       <div class="cbar">
@@ -108,11 +101,11 @@ export default {
       isLoaded: false,
       messages: [
         {body: '', person:"doc"},
-        {body: '.', person:"a"},
-        {body: '.', person:"a"},
-        {body: '.', person:"a"},
-        {body: '.', person:"a"},
-        {body:"接下来，为了了解你的健康状况，麻烦你简要回答一下如下问题:", person:"doc"}],
+        {body: '', person:"a"},
+        {body: '', person:"a"},
+        {body: '', person:"a"},
+        {body: '', person:"a"},
+       ],
       timenow: "",
       datenow: "",
       datetime: "",
@@ -136,6 +129,8 @@ export default {
         body: this.results.data.next.options[1].text,
         person: "you"});
       this.results="";
+      document.getElementById('a').disabled = true;
+      document.getElementById('b').disabled = true;
       this.nextQuestion();
     },
     option2() {
@@ -144,6 +139,8 @@ export default {
         body: this.results.data.next.options[0].text,
         person: "you"});
       this.results="";
+      document.getElementById('a').disabled = true;
+      document.getElementById('b').disabled = true;
       this.nextQuestion();
     },
     print() {
@@ -155,16 +152,22 @@ export default {
       this.drawChart();
     },
     startQuiz() {
+      var c = this;
+      setTimeout(function(){
+      c .messages.push({body:"接下来，为了了解你的健康状况，麻烦你简要回答一下如下问题:", person:"doc"});
+      }, 1000);
+      setTimeout(function(){
       const url = "/acup/dialectical/physique/question/next";
-      axios.post(url, this.arr).then(response => (
-      (this.results = response.data),
-      this.messages.push({body: this.results.data.next.question + "?",person: "doc"}),
-      document.getElementById('a').value=this.results.data.next.options[1].text,
-      document.getElementById('b').value=this.results.data.next.options[0].text
+      axios.post(url, c.arr).then(response => (
+      (c.results = response.data),
+      c.messages.push({body: c.results.data.next.question + "?",person: "doc"}),
+      document.getElementById('a').value=c.results.data.next.options[1].text,
+      document.getElementById('b').value=c.results.data.next.options[0].text
       ));
-      this.datetime = moment().format("MMM D, YYYY h:mm A");
-      this.introstage = false;
-      this.questionstage = true;
+      },2000);
+      c.datetime = moment().format("MMM D, YYYY h:mm A");
+      c.introstage = false;
+      c.questionstage = true;
 
     },
     async nextQuestion() {
@@ -185,36 +188,23 @@ export default {
             body: c.results.data.next.question + "?",
             person: "doc"});
             elem.scrollTop = elem.scrollHeight;
-        }, 50);
+        }, 1000);
         setTimeout(function() {
           elem.scrollTop = elem.scrollHeight;
           var bt = document.getElementById("a");
           var ct = document.getElementById("b");
           bt.value = c.results.data.next.options[1].text;
           ct.value = c.results.data.next.options[0].text;
-        }, 50);
+          document.getElementById('a').disabled = false;
+          document.getElementById('b').disabled = false;
+        }, 1000);
         return;
       }
-
       //if finished, submit 
       if (this.results.data.result != null) {
         this.submitForm();
         return;
       }
-      // var c = this;
-      // setTimeout(function() {
-      //   c.messages.push({
-      //     body: c.results.data.next.question + "?",
-      //     person: "doc"});
-      //     elem.scrollTop = elem.scrollHeight;
-      // }, 50);
-      // setTimeout(function() {
-      //   elem.scrollTop = elem.scrollHeight;
-      //   var bt = document.getElementById("a");
-      //   var ct = document.getElementById("b");
-      //   bt.value = c.results.data.next.options[1].text;
-      //   ct.value = c.results.data.next.options[0].text;
-      // }, 50);
     },
  
     drawChart() {
@@ -295,9 +285,6 @@ export default {
     }
   },
   mounted() {
-    // var a = location.href;
-    // var b = a.substring(a.indexOf("?")+1);
-    // alert(b);
     this.interval = setInterval(this.time, 1000);
   }
 };
@@ -311,12 +298,12 @@ export default {
   position:absolute;
   top: 30%;
   left: 50%;
-  margin-left:-48px;
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  margin-left:-36px;
+  border: 10px solid #f3f3f3; /* Light grey */
+  border-top: 10px solid #3498db; /* Blue */
+  border-radius:50%;
+  width: 30px;
+  height: 30px;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
@@ -324,6 +311,7 @@ export default {
   100% { transform: rotate(360deg); }
 }
 .gif{
+  z-index:2;
   -webkit-appearance:none;
   position:absolute;
   left:60px;
@@ -349,25 +337,6 @@ export default {
     transform:translateX(0px);
     opacity:1;
   }
-}
-.pic {
-  margin-left:5px;
-  margin-top: -7px;
-  height: 35px;
-  width: 35px;
-  position: absolute;
-  border-radius: 5px 5px 5px 5px;
-  left: 10px;
-}
-.pic2 {
-  -webkit-appearance: none;
-  margin-right:5px;
-  margin-top: -7px;
-  height: 37px;
-  width: 37px;
-  position: absolute;
-  border-radius: 5px 5px 5px 5px;
-  right: 10px;
 }
 .a {
   appearance:none; 
@@ -525,26 +494,58 @@ table tr {
   font-size: 0.8em;
   margin: 0 auto 0.3em auto;
 }
-.message-in:after {
-  background-image: url(../assets/lin.png);
-  background-size: cover;
+.pic {
+  margin-top: -7px;
+  height: 35px;
+  width: 35px;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 100;
+  border-radius: 5px 5px 5px 5px;
+  margin-left:-50px;
+}
+.pic2 {
+
+  margin-top: -7px;
+  height: 37px;
+  width: 37px;
+  position: absolute;
+  border-radius: 5px 5px 5px 5px;
+  margin-left:22px;
+
+}
+@keyframes leftfade{
+  0%{
+    transform:translateX(-50px);
+  }
+  100%{
+    transform:translateX(0px);
+  }
+}
+@keyframes rightfade{
+  0%{
+    transform:translateX(50px);
+  }
+  100%{
+    transform:translateX(0px);
+  }
 }
 .message-in {
+  animation-name: leftfade;
+  animation-duration: 1s;
   background: white;
   color: rgb(0, 0, 0);
   margin-left: 40px;
   text-align: left;
 }
 .message-out {
+  z-index:2;
+  animation-name: rightfade;
+  animation-duration: 1s;
   background: rgb(82, 226, 53);
   color: black;
   margin-right: 40px;
 }
 .message-a {
+  height:18px;
   color:rgb(240, 240, 240);
   margin-bottom:0px;
 }
