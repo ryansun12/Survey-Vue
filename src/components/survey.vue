@@ -1,8 +1,12 @@
 <template>
   <div id="survey">
-    <div v-show="!isLoaded" class="loading"></div>
+    <div v-show="!isLoaded" class="loadingbg">
+      <!-- <div class="loading"> </div> -->
+    </div>
     <div v-show="isLoaded">
+      <div class="tmp"></div>
       <div id= "background"> <img src="../assets/wallpaper.jpg" @load="loaded">
+      <img src="../assets/ball.gif" @load="loaded">
       <img src="../assets/lin.png" @load="loaded">
       <img src="../assets/bruh.png" @load="loaded"></div>
     <div v-show="introstage" class="intro">
@@ -25,6 +29,7 @@
       <div class="shimmer" @click="startQuiz">点击解锁</div>
     </div>
     <div v-show="questionstage" class="stage2">
+      {{avatar}}
       <div class="time2">{{timenow}}</div>
       <img class="wifi" src="../assets/wifi.png" @load="loaded"/>
       <img class="battery" src="../assets/battery.png" @load="loaded"/>
@@ -39,14 +44,22 @@
           <br />You have added 林医师 as your WeChat contact. <br>Start Chatting!
         </div>
         <img class="gif" src="../assets/aaa.gif" @load="loaded"/>
+        <img src="../assets/lin.png" class="fpic">
         <div v-for="(msg, index) in messages" class="message"  v-bind:key="msg+index" :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}">
-          <div v-show="msg.person==='doc'" id="prof">
+          <div v-show="msg.person==='doc'">
             <img src="../assets/lin.png" class="pic" />
+            <div class="triangle-left"></div>
           </div>
           <div v-show="msg.person==='you'">
-            <img src="../assets/bruh.png" class="pic2" />
+            <div v-if="avatar === null">
+              <img src="../assets/bruh.png" class="pic2" />
+            </div>
+            <div v-else>
+              <img src="../assets/wallpaper.jpg" class="pic2"/>
+            </div>
+            <div class="triangle-right"></div>
           </div>
-          <div class="msg">{{msg.body}}</div>
+            <div class="msg">{{msg.body}}</div>
         </div>
       </div>
       <div class="cbar">
@@ -55,7 +68,7 @@
         <img class="smile" src="../assets/smile.png" @load="loaded"/>
         <img class="plus" src="../assets/plus.png" @load="loaded"/>
       </div>
-      <div class="enter">问止输入法</div>
+      <div class="enter">{{entermsg}}</div>
       <div class="keyboard">
         <form class="form" name="form_name" id="form_name">
           <table align="center" id="table1">
@@ -97,10 +110,12 @@ export default {
   name: "survey",
   data() {
     return {
+      diag: "",
+      entermsg: "问止输入法",
       count: 0,
       isLoaded: false,
       messages: [
-        {body: '', person:"doc"},
+        {body: '', person:"a"},
         {body: '', person:"a"},
         {body: '', person:"a"},
         {body: '', person:"a"},
@@ -116,6 +131,7 @@ export default {
       questionstage: false,
       resultstage: false,
       results: "",
+      avatar:'',
     };
   },
   methods: {
@@ -131,6 +147,7 @@ export default {
       this.results="";
       document.getElementById('a').disabled = true;
       document.getElementById('b').disabled = true;
+      this.entermsg = "对方正在输入...";
       this.nextQuestion();
     },
     option2() {
@@ -141,30 +158,61 @@ export default {
       this.results="";
       document.getElementById('a').disabled = true;
       document.getElementById('b').disabled = true;
+      this.entermsg = "对方正在输入...";
       this.nextQuestion();
     },
     print() {
       window.print();
     },
-    submitForm() {
-      this.questionstage = false;
-      this.resultstage = true;
-      this.drawChart();
+    async submitForm() {
+      var elem = document.getElementById("container");
+      var c = this;
+      var len = this.results.data.result.physiqueResults.length;
+      var max = -1;
+      var index = -1;
+      for(var i =0; i < len; i++){
+        if (this.results.data.result.physiqueResults[i].score > max){
+          max = this.results.data.result.physiqueResults[i].score;
+          index = i;
+        }
+      }
+      this.messages.push({
+        body:this.results.data.result.physiqueResults[index].name + "体质",
+        person:"doc"
+      }); 
+
+      // const url = "/acup/dialectical/physique/{physiqueId}/conditioning";
+      // await axios.get(url, {params: {physiqueId: index}}).then(response => (this.diag = response.data));
+      // alert(this.diag.data.physiqueName);
+      
+      setTimeout(function(){elem.scrollTop = elem.scrollHeight;},0);
+      setTimeout(function(){
+      c.questionstage = false;
+      c.resultstage = true;
+      c.drawChart();
+      },2500);
+
     },
     startQuiz() {
       var c = this;
+      c.entermsg = "对方正在输入...";
       setTimeout(function(){
       c .messages.push({body:"接下来，为了了解你的健康状况，麻烦你简要回答一下如下问题:", person:"doc"});
-      }, 1000);
+      c.entermsg = "问止输入法"
+      }, 1500);
+      setTimeout(function(){
+        c.entermsg = "对方正在输入...";
+      },2000);
       setTimeout(function(){
       const url = "/acup/dialectical/physique/question/next";
       axios.post(url, c.arr).then(response => (
       (c.results = response.data),
       c.messages.push({body: c.results.data.next.question + "?",person: "doc"}),
       document.getElementById('a').value=c.results.data.next.options[1].text,
-      document.getElementById('b').value=c.results.data.next.options[0].text
+      document.getElementById('b').value=c.results.data.next.options[0].text,
+      c.entermsg = "问止输入法"
       ));
-      },2000);
+      },3000);
       c.datetime = moment().format("MMM D, YYYY h:mm A");
       c.introstage = false;
       c.questionstage = true;
@@ -188,7 +236,7 @@ export default {
             body: c.results.data.next.question + "?",
             person: "doc"});
             elem.scrollTop = elem.scrollHeight;
-        }, 1000);
+        }, 1250);
         setTimeout(function() {
           elem.scrollTop = elem.scrollHeight;
           var bt = document.getElementById("a");
@@ -197,13 +245,16 @@ export default {
           ct.value = c.results.data.next.options[0].text;
           document.getElementById('a').disabled = false;
           document.getElementById('b').disabled = false;
-        }, 1000);
+          c.entermsg = "问止输入法";
+        }, 1250);
         return;
       }
       //if finished, submit 
       if (this.results.data.result != null) {
-        this.submitForm();
-        return;
+        var d = this;
+        setTimeout(function(){d.messages.push({body: "有结果了！", person: "doc"})},500);
+        setTimeout(function(){elem.scrollTop = elem.scrollHeight},500);
+        setTimeout(function(){d.submitForm(); return;}, 2500);
       }
     },
  
@@ -280,9 +331,19 @@ export default {
     },
     loaded(){
       this.count++;
-      if(this.count == 16)
+      if(this.count == 17)
       this.isLoaded = true;
     }
+  },
+  created(){
+    // const url = "/wechat/service/login";
+    var currUrl= window.location.href;
+    var a = currUrl.indexOf('=') + 1;
+    var code = currUrl.substr(a,);
+    // alert(code);
+    // axios.get(url,{params:{redirect_url: 'http://192.168.0.128:8080/login'}}).then(response => (code = response.data));
+    const url =  "/wechat/service/userinfo";
+    axios.get(url,{params:{code: code}}).then(response => (this.avatar = response.data.avatarUrl));
   },
   mounted() {
     this.interval = setInterval(this.time, 1000);
@@ -291,16 +352,72 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes temp{
+  0%{
+    opacity:1
+  }
+  100%{
+    opacity: 0;
+    z-index:-1;
+  }
+}
+.tmp::after{
+  background-image:url(../assets/ball.gif);
+  background-size:cover;
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  content:"";
+  z-index:1;
+  animation:temp 5s;
+  animation-fill-mode:forwards;
+
+}
+
+.triangle-left{
+  width:0;
+  height:0;
+  border-top:2px solid transparent;
+  border-right:4px solid white;
+  border-bottom:2px solid transparent;
+  position:absolute;
+  margin-left:-12px;
+  margin-top:2px;
+
+}
+.triangle-right{
+  width:0;
+  height:0;
+  border-top:2px solid transparent;
+  border-left:4px solid rgb(82, 226, 53);
+  border-bottom:2px solid transparent;
+  position:absolute;
+  right:56px;
+  margin-top:2px;
+}
 #background{
   display:none;
+}
+.loadingbg::after{
+  background:#0e0e0e;
+  background-size:cover;
+  content:"";
+  top:0px;
+  left:0px;
+  position:absolute;
+  z-index:-1;
+  width:100%;
+  height:100%;
 }
 .loading{
   position:absolute;
   top: 30%;
   left: 50%;
   margin-left:-36px;
-  border: 10px solid #f3f3f3; /* Light grey */
-  border-top: 10px solid #3498db; /* Blue */
+  border: 10px solid #f3f3f3; 
+  border-top: 10px solid rgb(82, 226, 53);
   border-radius:50%;
   width: 30px;
   height: 30px;
@@ -311,7 +428,6 @@ export default {
   100% { transform: rotate(360deg); }
 }
 .gif{
-  z-index:2;
   -webkit-appearance:none;
   position:absolute;
   left:60px;
@@ -330,12 +446,10 @@ export default {
 }
 @keyframes slide2{
   from {
-    transform:translateX(500px);
-    opacity:0;
+     transform:rotate(0deg) scale(0);
   }
   to{
-    transform:translateX(0px);
-    opacity:1;
+     transform:rotate(1440deg)  scale(1);
   }
 }
 .a {
@@ -433,9 +547,7 @@ table tr {
     transform: scale(1.0)
   }
 }
-.startbutton {
-  animation: fadein 2s;
-}
+
 @keyframes fadein {
   from {
     transform: scale(0);
@@ -487,12 +599,18 @@ table tr {
   padding-bottom: 1em;
 }
 .message {
-  width: fit-content;
   max-width: 60%;
   border-radius: 10px;
   padding: 0.5em;
   font-size: 0.8em;
   margin: 0 auto 0.3em auto;
+}
+.fpic{
+  height:35px;
+  width:35px;
+  border-radius: 5px 5px 5px 5px;
+  position:absolute;
+  left:17px;
 }
 .pic {
   margin-top: -7px;
@@ -503,32 +621,34 @@ table tr {
   margin-left:-50px;
 }
 .pic2 {
-
   margin-top: -7px;
   height: 37px;
   width: 37px;
   position: absolute;
   border-radius: 5px 5px 5px 5px;
-  margin-left:22px;
+  right:17px;
 
 }
 @keyframes leftfade{
   0%{
+    opacity:0;
     transform:translateX(-50px);
   }
   100%{
     transform:translateX(0px);
+    opacity:1;
   }
 }
 @keyframes rightfade{
   0%{
-    transform:translateX(50px);
+    opacity:0;
   }
   100%{
-    transform:translateX(0px);
+    opacity:1;
   }
 }
 .message-in {
+  width:fit-content;
   animation-name: leftfade;
   animation-duration: 1s;
   background: white;
@@ -537,7 +657,7 @@ table tr {
   text-align: left;
 }
 .message-out {
-  z-index:2;
+  width:fit-content;
   animation-name: rightfade;
   animation-duration: 1s;
   background: rgb(82, 226, 53);
@@ -545,7 +665,7 @@ table tr {
   margin-right: 40px;
 }
 .message-a {
-  height:18px;
+  height:15.5px;
   color:rgb(240, 240, 240);
   margin-bottom:0px;
 }
@@ -566,9 +686,9 @@ table tr {
 .signal {
   position: absolute;
   top: 7px;
-  right: 56px;
-  width: 15px;
-  height: 15px;
+  right: 54px;
+  width: 16px;
+  height: 13px;
 }
 .battery {
   position: absolute;
@@ -579,10 +699,10 @@ table tr {
 }
 .wifi {
   position: absolute;
-  top: 4px;
+  top: 5px;
   right: 32px;
   width: 20px;
-  height: 20px;
+  height: 18px;
 }
 .date {
   color: white;
@@ -676,6 +796,7 @@ table tr {
   font-weight: bold;
 }
 .startbutton {
+  animation: fadein 4s;
   position: relative;
   margin-top: 0px;
   color: black;
@@ -801,7 +922,6 @@ canvas {
     font-size: 30px;
     text-align: center;
     visibility: visible;
-    z-index: -1;
     position: absolute;
     margin-top: -50px;
     margin-left: 40%;
@@ -810,7 +930,6 @@ canvas {
     transform: scaleX(0.5);
     position: absolute;
     margin-top: 75px;
-    z-index: 2;
     top: 0px;
     visibility: visible;
   }
