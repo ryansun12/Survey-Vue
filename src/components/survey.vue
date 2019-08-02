@@ -51,11 +51,11 @@
             <div class="triangle-left"></div>
           </div>
           <div v-show="msg.person==='you'">
-            <div v-if="avatar === null">
+            <div v-if="avatar === ''">
               <img src="../assets/bruh.png" class="pic2" />
             </div>
             <div v-else>
-              <img src="../assets/wallpaper.jpg" class="pic2"/>
+              <img id="pic" class="pic2"/>
             </div>
             <div class="triangle-right"></div>
           </div>
@@ -343,7 +343,10 @@ export default {
     // alert(code);
     // axios.get(url,{params:{redirect_url: 'http://192.168.0.128:8080/login'}}).then(response => (code = response.data));
     const url =  "/wechat/service/userinfo";
-    axios.get(url,{params:{code: code}}).then(response => (this.avatar = response.data.avatarUrl));
+    axios.get(url,{params:{code: code,}}).then(response => (this.avatar = response.data.avatarUrl));
+    var img = new Image;
+    img.src = this.avatar;
+    document.getElementById('pic').src = img.src;
   },
   mounted() {
     this.interval = setInterval(this.time, 1000);
