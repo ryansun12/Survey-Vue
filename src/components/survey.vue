@@ -5,97 +5,105 @@
     </div>
     <div v-show="isLoaded">
       <div class="tmp"></div>
-      <div id= "background"> <img src="../assets/wallpaper.jpg" @load="loaded">
-      <img src="../assets/ball.gif" @load="loaded">
-      <img src="../assets/lin.png" @load="loaded">
-      <img src="../assets/bruh.png" @load="loaded"></div>
-    <div v-show="introstage" class="intro">
-      <img class="wifi" src="../assets/wifi2.png" @load="loaded"/>
-      <img class="battery" src="../assets/battery2.png" @load="loaded"/>
-      <img class="signal" src="../assets/signal2.png" @load="loaded"/>
-      <div class="carrier">中国移动</div>
-      <div class="time">{{timenow}}</div>
-      <div class="date">{{datenow}}</div>
-      <br />
-      <button class="startbutton" @click="startQuiz" >
-        <div class="tophalf">
-          <img class="wechat" src="../assets/wechat.png" @load="loaded"/>
-          <span class="btntxt2">微信</span>
-          <span class="btntxt3">现在</span>
-        </div>
-        <span class="btntxt4">林医师👨‍⚕️</span>
-        <span class="btntxt">你有一条来自问止中医首席医疗官的消息</span>
-      </button>
-      <div class="shimmer" @click="startQuiz">点击解锁</div>
-    </div>
-    <div v-show="questionstage" class="stage2">
-      {{avatar}}
-      <div class="time2">{{timenow}}</div>
-      <img class="wifi" src="../assets/wifi.png" @load="loaded"/>
-      <img class="battery" src="../assets/battery.png" @load="loaded"/>
-      <img class="signal" src="../assets/signal.png" @load="loaded"/>
-      <div class="time2">{{timenow}}</div>
-      <img class="prev" src="../assets/lessthan.png" @click="refresh" @load="loaded"/>
-      <div class="title">林医师👨‍⚕️</div>
-      <img class="dot" src="../assets/dot.png" @load="loaded"/>
-      <div class="container" id="container">
-        <div class="prologue">
-          {{datetime}}
-          <br />You have added 林医师 as your WeChat contact. <br>Start Chatting!
-        </div>
-        <img class="gif" src="../assets/aaa.gif" @load="loaded"/>
-        <img src="../assets/lin.png" class="fpic">
-        <div v-for="(msg, index) in messages" class="message"  v-bind:key="msg+index" :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}">
-          <div v-show="msg.person==='doc'">
-            <img src="../assets/lin.png" class="pic" />
-            <div class="triangle-left"></div>
+      <div id="background">
+        <img src="../assets/wallpaper.jpg" @load="loaded" />
+        <img src="../assets/ball.gif" @load="loaded" />
+        <img src="../assets/lin.png" @load="loaded" />
+        <img src="../assets/bruh.png" @load="loaded" />
+      </div>
+      <div v-show="introstage" class="intro">
+        <img class="wifi" src="../assets/wifi2.png" @load="loaded" />
+        <img class="battery" src="../assets/battery2.png" @load="loaded" />
+        <img class="signal" src="../assets/signal2.png" @load="loaded" />
+        <div class="carrier">中国移动</div>
+        <div class="time">{{timenow}}</div>
+        <div class="date">{{datenow}}</div>
+        <br />
+        <button class="startbutton" @click="startQuiz">
+          <div class="tophalf">
+            <img class="wechat" src="../assets/wechat.png" @load="loaded" />
+            <span class="btntxt2">微信</span>
+            <span class="btntxt3">现在</span>
           </div>
-          <div v-show="msg.person==='you'">
-            <div v-if="avatar === ''">
-              <img src="../assets/bruh.png" class="pic2" />
-            </div>
-            <div v-else>
-              <img id="pic" class="pic2"/>
-            </div>
-            <div class="triangle-right"></div>
+          <span class="btntxt4">林医师👨‍⚕️</span>
+          <span class="btntxt">你有一条来自问止中医首席医疗官的消息</span>
+        </button>
+        <div class="shimmer" @click="startQuiz">点击解锁</div>
+      </div>
+      <div v-show="questionstage" class="stage2">
+        {{avatar}}
+        <div class="time2">{{timenow}}</div>
+        <img class="wifi" src="../assets/wifi.png" @load="loaded" />
+        <img class="battery" src="../assets/battery.png" @load="loaded" />
+        <img class="signal" src="../assets/signal.png" @load="loaded" />
+        <div class="time2">{{timenow}}</div>
+        <img class="prev" src="../assets/lessthan.png" @click="refresh" @load="loaded" />
+        <div class="title">林医师👨‍⚕️</div>
+        <img class="dot" src="../assets/dot.png" @load="loaded" />
+        <div class="container" id="container">
+          <div class="prologue">
+            {{datetime}}
+            <br />You have added 林医师 as your WeChat contact.
+            <br />Start Chatting!
           </div>
+          <img class="gif" src="../assets/aaa.gif" @load="loaded" />
+          <img src="../assets/lin.png" class="fpic" />
+          <div
+            v-for="(msg, index) in messages"
+            class="message"
+            v-bind:key="msg+index"
+            :class="{'message-out': msg.person ==='you', 'message-in': msg.person === 'doc', 'message-a': msg.person==='a'}"
+          >
+            <div v-show="msg.person==='doc'">
+              <img src="../assets/lin.png" class="pic" />
+              <div class="triangle-left"></div>
+            </div>
+            <div v-show="msg.person==='you'">
+              <div v-if="avatar === ''">
+                <img src="../assets/bruh.png" class="pic2" />
+              </div>
+              <div v-else>
+                <img id="pic" class="pic2" />
+              </div>
+              <div class="triangle-right"></div>
+            </div>
             <div class="msg">{{msg.body}}</div>
+          </div>
+        </div>
+        <div class="cbar">
+          <img class="talk" src="../assets/talk.png" @load="loaded" />
+          <div class="blank"></div>
+          <img class="smile" src="../assets/smile.png" @load="loaded" />
+          <img class="plus" src="../assets/plus.png" @load="loaded" />
+        </div>
+        <div class="enter">{{entermsg}}</div>
+        <div class="keyboard">
+          <form class="form" name="form_name" id="form_name">
+            <table align="center" id="table1">
+              <tr class="clickable" id="opt" @click="option1">
+                <td>
+                  <input type="button" class="a" id="a" value />
+                </td>
+              </tr>
+              <tr class="clickable" id="opt" @click="option2">
+                <td>
+                  <input type="button" class="a" id="b" value />
+                </td>
+              </tr>
+            </table>
+          </form>
         </div>
       </div>
-      <div class="cbar">
-        <img class="talk" src="../assets/talk.png" @load="loaded"/>
-        <div class="blank"></div>
-        <img class="smile" src="../assets/smile.png" @load="loaded"/>
-        <img class="plus" src="../assets/plus.png" @load="loaded"/>
+      <div v-show="resultstage" class="resultstage">
+        <div class="title2">测试结果</div>
+        <div class="text2">您好，你的测试结果如下，也可以直接打印查看哦～</div>
+        <div class="flex">
+          <button class="printButton" @click="print">打印</button>
+          <button class="refreshButton" @click="refresh">返回首页</button>
+        </div>
+        <canvas id="myChart" class="chart"></canvas>
+        <br />
       </div>
-      <div class="enter">{{entermsg}}</div>
-      <div class="keyboard">
-        <form class="form" name="form_name" id="form_name">
-          <table align="center" id="table1">
-            <tr class="clickable" id="opt" @click="option1">
-              <td>
-                <input type="button" class="a" id="a" value=""/>
-              </td>
-            </tr>
-            <tr class="clickable" id="opt" @click="option2">
-              <td>
-                <input type="button" class="a" id="b" value=""/>
-              </td>
-            </tr>
-          </table>
-        </form>
-      </div>
-    </div>
-    <div v-show="resultstage" class="resultstage">
-      <div class="title2">测试结果</div>
-      <div class="text2">您好，你的测试结果如下，也可以直接打印查看哦～</div>
-      <div class="flex">
-        <button class="printButton" @click="print">打印</button>
-        <button class="refreshButton" @click="refresh">返回首页</button>
-      </div>
-      <canvas id="myChart" class="chart"></canvas>
-      <br />
-    </div>
     </div>
   </div>
 </template>
@@ -110,7 +118,6 @@ export default {
   name: "survey",
   data() {
     return {
-      diag: "",
       entermsg: "问止输入法",
       count: 0,
       isLoaded: false,
@@ -124,9 +131,7 @@ export default {
       timenow: "",
       datenow: "",
       datetime: "",
-      arr: { //match P0ST format
-        answers: []
-      },
+      vals : [],
       introstage: true,
       questionstage: false,
       resultstage: false,
@@ -140,9 +145,9 @@ export default {
       this.datenow = moment().format("dddd, MMMM D");
     },
     option1() {
-      this.arr.answers.push({id:this.results.data.next.id, optionValue:this.results.data.next.options[1].value});
+      this.vals.push({id:this.results.id, value: 1});
       this.messages.push({
-        body: this.results.data.next.options[1].text,
+        body: this.results.answer1,
         person: "you"});
       this.results="";
       document.getElementById('a').disabled = true;
@@ -151,9 +156,9 @@ export default {
       this.nextQuestion();
     },
     option2() {
-     this.arr.answers.push({id:this.results.data.next.id, optionValue:this.results.data.next.options[0].value});
+     this.vals.push({id:this.results.id, value: 0});
       this.messages.push({
-        body: this.results.data.next.options[0].text,
+        body: this.results.answer2,
         person: "you"});
       this.results="";
       document.getElementById('a').disabled = true;
@@ -180,10 +185,6 @@ export default {
         body:this.results.data.result.physiqueResults[index].name + "体质",
         person:"doc"
       }); 
-
-      // const url = "/acup/dialectical/physique/{physiqueId}/conditioning";
-      // await axios.get(url, {params: {physiqueId: index}}).then(response => (this.diag = response.data));
-      // alert(this.diag.data.physiqueName);
       
       setTimeout(function(){elem.scrollTop = elem.scrollHeight;},0);
       setTimeout(function(){
@@ -203,15 +204,15 @@ export default {
       setTimeout(function(){
         c.entermsg = "对方正在输入...";
       },2000);
-      setTimeout(function(){
-      const url = "/acup/dialectical/physique/question/next";
-      axios.post(url, c.arr).then(response => (
-      (c.results = response.data),
-      c.messages.push({body: c.results.data.next.question + "?",person: "doc"}),
-      document.getElementById('a').value=c.results.data.next.options[1].text,
-      document.getElementById('b').value=c.results.data.next.options[0].text,
-      c.entermsg = "问止输入法"
-      ));
+      setTimeout( async function(){
+        const url = "/next";
+        await axios.post(url, {values: []}).then(response => (
+          c.results = response.data.question,
+          c.messages.push({body: c.results.question + "?",person: "doc"}),
+          document.getElementById('a').value=c.results.answer1,
+          document.getElementById('b').value=c.results.answer2,
+          c.entermsg = "问止输入法"
+        ));
       },3000);
       c.datetime = moment().format("MMM D, YYYY h:mm A");
       c.introstage = false;
@@ -224,16 +225,16 @@ export default {
           elem.scrollTop = elem.scrollHeight;
       }, 0);
       //try to get a new question
-      const url = "/acup/dialectical/physique/question/next";
-      await axios.post(url, this.arr).then(response => (
-      this.results = response.data));
+      const url = "/next"
+      await axios.post(url, {values: this.vals}).then(response => (
+      this.results = response.data.question));
 
       // if question exists, display & return
-      if(this.results.data.next != null) {
+      if(this.results.question != null) {
         var c = this;
         setTimeout(function() {
           c.messages.push({
-            body: c.results.data.next.question + "?",
+            body: c.results.question + "?",
             person: "doc"});
             elem.scrollTop = elem.scrollHeight;
         }, 1250);
@@ -241,8 +242,8 @@ export default {
           elem.scrollTop = elem.scrollHeight;
           var bt = document.getElementById("a");
           var ct = document.getElementById("b");
-          bt.value = c.results.data.next.options[1].text;
-          ct.value = c.results.data.next.options[0].text;
+          bt.value = c.results.answer1;
+          ct.value = c.results.answer2;
           document.getElementById('a').disabled = false;
           document.getElementById('b').disabled = false;
           c.entermsg = "问止输入法";
@@ -335,19 +336,6 @@ export default {
       this.isLoaded = true;
     }
   },
-  created(){
-    // const url = "/wechat/service/login";
-    var currUrl= window.location.href;
-    var a = currUrl.indexOf('=') + 1;
-    var code = currUrl.substr(a,);
-    // alert(code);
-    // axios.get(url,{params:{redirect_url: 'http://192.168.0.128:8080/login'}}).then(response => (code = response.data));
-    const url =  "/wechat/service/userinfo";
-    axios.get(url,{params:{code: code,}}).then(response => (this.avatar = response.data.avatarUrl));
-    var img = new Image;
-    img.src = this.avatar;
-    document.getElementById('pic').src = img.src;
-  },
   mounted() {
     this.interval = setInterval(this.time, 1000);
   }
@@ -355,110 +343,112 @@ export default {
 </script>
 
 <style lang="scss">
-@keyframes temp{
-  0%{
-    opacity:1
+@keyframes temp {
+  0% {
+    opacity: 1;
   }
-  100%{
+  100% {
     opacity: 0;
-    z-index:-1;
+    z-index: -1;
   }
 }
-.tmp::after{
-  background-image:url(../assets/ball.gif);
-  background-size:cover;
-  position:absolute;
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100%;
-  content:"";
-  z-index:1;
-  animation:temp 5s;
-  animation-fill-mode:forwards;
-
+.tmp::after {
+  background-image: url(../assets/ball.gif);
+  background-size: cover;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  content: "";
+  z-index: 1;
+  animation: temp 5s;
+  animation-fill-mode: forwards;
 }
 
-.triangle-left{
-  width:0;
-  height:0;
-  border-top:2px solid transparent;
-  border-right:4px solid white;
-  border-bottom:2px solid transparent;
-  position:absolute;
-  margin-left:-12px;
-  margin-top:2px;
-
+.triangle-left {
+  width: 0;
+  height: 0;
+  border-top: 2px solid transparent;
+  border-right: 4px solid white;
+  border-bottom: 2px solid transparent;
+  position: absolute;
+  margin-left: -12px;
+  margin-top: 2px;
 }
-.triangle-right{
-  width:0;
-  height:0;
-  border-top:2px solid transparent;
-  border-left:4px solid rgb(82, 226, 53);
-  border-bottom:2px solid transparent;
-  position:absolute;
-  right:56px;
-  margin-top:2px;
+.triangle-right {
+  width: 0;
+  height: 0;
+  border-top: 2px solid transparent;
+  border-left: 4px solid rgb(82, 226, 53);
+  border-bottom: 2px solid transparent;
+  position: absolute;
+  right: 56px;
+  margin-top: 2px;
 }
-#background{
-  display:none;
+#background {
+  display: none;
 }
-.loadingbg::after{
-  background:#0e0e0e;
-  background-size:cover;
-  content:"";
-  top:0px;
-  left:0px;
-  position:absolute;
-  z-index:-1;
-  width:100%;
-  height:100%;
+.loadingbg::after {
+  background: #0e0e0e;
+  background-size: cover;
+  content: "";
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
 }
-.loading{
-  position:absolute;
+.loading {
+  position: absolute;
   top: 30%;
   left: 50%;
-  margin-left:-36px;
-  border: 10px solid #f3f3f3; 
+  margin-left: -36px;
+  border: 10px solid #f3f3f3;
   border-top: 10px solid rgb(82, 226, 53);
-  border-radius:50%;
+  border-radius: 50%;
   width: 30px;
   height: 30px;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
-.gif{
-  -webkit-appearance:none;
-  position:absolute;
-  left:60px;
-  height:155px;
-  width:100px;
+.gif {
+  -webkit-appearance: none;
+  position: absolute;
+  left: 60px;
+  height: 155px;
+  width: 100px;
 }
-.enter{
-  padding-top:5px;
-  background:rgb(221, 221, 221);
-  position:relative;
-  font-size:14px;
-  top:50px;
+.enter {
+  padding-top: 5px;
+  background: rgb(221, 221, 221);
+  position: relative;
+  font-size: 14px;
+  top: 50px;
 }
-.resultstage{
+.resultstage {
   animation: slide2 1.5s;
 }
-@keyframes slide2{
+@keyframes slide2 {
   from {
-     transform:rotate(0deg) scale(0);
+    transform: rotate(0deg) scale(0);
   }
-  to{
-     transform:rotate(1440deg)  scale(1);
+  to {
+    transform: rotate(1440deg) scale(1);
   }
 }
 .a {
-  appearance:none; 
+  appearance: none;
   -moz-appearance: none;
-  -webkit-appearance: none; 
+  -webkit-appearance: none;
   border-radius: 10px 10px 10px 10px;
   background: rgb(255, 255, 255);
   margin-right: 10px;
@@ -544,10 +534,10 @@ table tr {
 }
 @keyframes slide {
   from {
-    transform: scale(3.0)
+    transform: scale(3);
   }
   to {
-    transform: scale(1.0)
+    transform: scale(1);
   }
 }
 
@@ -563,7 +553,7 @@ table tr {
   }
 }
 .shimmer {
-  cursor:pointer;
+  cursor: pointer;
   position: absolute;
   top: 85%;
   left: 50%;
@@ -608,12 +598,12 @@ table tr {
   font-size: 0.8em;
   margin: 0 auto 0.3em auto;
 }
-.fpic{
-  height:35px;
-  width:35px;
+.fpic {
+  height: 35px;
+  width: 35px;
   border-radius: 5px 5px 5px 5px;
-  position:absolute;
-  left:17px;
+  position: absolute;
+  left: 17px;
 }
 .pic {
   margin-top: -7px;
@@ -621,7 +611,7 @@ table tr {
   width: 35px;
   position: absolute;
   border-radius: 5px 5px 5px 5px;
-  margin-left:-50px;
+  margin-left: -50px;
 }
 .pic2 {
   margin-top: -7px;
@@ -629,29 +619,28 @@ table tr {
   width: 37px;
   position: absolute;
   border-radius: 5px 5px 5px 5px;
-  right:17px;
-
+  right: 17px;
 }
-@keyframes leftfade{
-  0%{
-    opacity:0;
-    transform:translateX(-50px);
+@keyframes leftfade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
   }
-  100%{
-    transform:translateX(0px);
-    opacity:1;
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
   }
 }
-@keyframes rightfade{
-  0%{
-    opacity:0;
+@keyframes rightfade {
+  0% {
+    opacity: 0;
   }
-  100%{
-    opacity:1;
+  100% {
+    opacity: 1;
   }
 }
 .message-in {
-  width:fit-content;
+  width: fit-content;
   animation-name: leftfade;
   animation-duration: 1s;
   background: white;
@@ -660,7 +649,7 @@ table tr {
   text-align: left;
 }
 .message-out {
-  width:fit-content;
+  width: fit-content;
   animation-name: rightfade;
   animation-duration: 1s;
   background: rgb(82, 226, 53);
@@ -668,9 +657,9 @@ table tr {
   margin-right: 40px;
 }
 .message-a {
-  height:15.5px;
-  color:rgb(240, 240, 240);
-  margin-bottom:0px;
+  height: 15.5px;
+  color: rgb(240, 240, 240);
+  margin-bottom: 0px;
 }
 .container {
   padding: 1em;
@@ -879,7 +868,7 @@ canvas {
 }
 
 @media screen and (min-width: 259px) and (max-width: 823px) {
-  .a{
+  .a {
     padding: 6px;
   }
   .refreshButton {
@@ -888,15 +877,15 @@ canvas {
     height: 50%;
   }
   .title2 {
-    margin-top:-20px;
+    margin-top: -20px;
     font-size: 30px;
     text-align: center;
-    margin-bottom:30px;
+    margin-bottom: 30px;
   }
   .text2 {
     text-align: center;
     font-size: 24px;
-    margin-bottom:30px;
+    margin-bottom: 30px;
   }
   .printButton {
     margin-right: 5px;
