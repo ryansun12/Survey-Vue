@@ -145,9 +145,9 @@ export default {
       this.datenow = moment().format("dddd, MMMM D");
     },
     option1() {
-      this.vals.push({id:this.results.id, value: 1});
+      this.vals.push({id:this.results.question.id - 1, value: 1});
       this.messages.push({
-        body: this.results.answer1,
+        body: this.results.question.answer1,
         person: "you"});
       this.results="";
       document.getElementById('a').disabled = true;
@@ -156,9 +156,9 @@ export default {
       this.nextQuestion();
     },
     option2() {
-     this.vals.push({id:this.results.id, value: 0});
+     this.vals.push({id:this.results.question.id - 1, value: 0});
       this.messages.push({
-        body: this.results.answer2,
+        body: this.results.question.answer2,
         person: "you"});
       this.results="";
       document.getElementById('a').disabled = true;
@@ -172,26 +172,13 @@ export default {
     async submitForm() {
       var elem = document.getElementById("container");
       var c = this;
-      var len = this.results.data.result.physiqueResults.length;
-      var max = -1;
-      var index = -1;
-      for(var i =0; i < len; i++){
-        if (this.results.data.result.physiqueResults[i].score > max){
-          max = this.results.data.result.physiqueResults[i].score;
-          index = i;
-        }
-      }
-      this.messages.push({
-        body:this.results.data.result.physiqueResults[index].name + "体质",
-        person:"doc"
-      }); 
-      
+
       setTimeout(function(){elem.scrollTop = elem.scrollHeight;},0);
       setTimeout(function(){
       c.questionstage = false;
       c.resultstage = true;
       c.drawChart();
-      },2500);
+      },500);
 
     },
     startQuiz() {
@@ -207,10 +194,10 @@ export default {
       setTimeout( async function(){
         const url = "/next";
         await axios.post(url, {values: []}).then(response => (
-          c.results = response.data.question,
-          c.messages.push({body: c.results.question + "?",person: "doc"}),
-          document.getElementById('a').value=c.results.answer1,
-          document.getElementById('b').value=c.results.answer2,
+          c.results = response.data,
+          c.messages.push({body: c.results.question.question + "?",person: "doc"}),
+          document.getElementById('a').value=c.results.question.answer1,
+          document.getElementById('b').value=c.results.question.answer2,
           c.entermsg = "问止输入法"
         ));
       },3000);
@@ -227,14 +214,14 @@ export default {
       //try to get a new question
       const url = "/next"
       await axios.post(url, {values: this.vals}).then(response => (
-      this.results = response.data.question));
+      this.results = response.data));
 
-      // if question exists, display & return
-      if(this.results.question != null) {
+      // otherwise if question exists, display & return
+      if(this.results.question != null && this.results.results == null) {
         var c = this;
         setTimeout(function() {
           c.messages.push({
-            body: c.results.question + "?",
+            body: c.results.question.question + "?",
             person: "doc"});
             elem.scrollTop = elem.scrollHeight;
         }, 1250);
@@ -242,16 +229,16 @@ export default {
           elem.scrollTop = elem.scrollHeight;
           var bt = document.getElementById("a");
           var ct = document.getElementById("b");
-          bt.value = c.results.answer1;
-          ct.value = c.results.answer2;
+          bt.value = c.results.question.answer1;
+          ct.value = c.results.question.answer2;
           document.getElementById('a').disabled = false;
           document.getElementById('b').disabled = false;
           c.entermsg = "问止输入法";
         }, 1250);
         return;
       }
-      //if finished, submit 
-      if (this.results.data.result != null) {
+            //if finished, submit 
+      if (this.results.results != null) {
         var d = this;
         setTimeout(function(){d.messages.push({body: "有结果了！", person: "doc"})},500);
         setTimeout(function(){elem.scrollTop = elem.scrollHeight},500);
@@ -261,14 +248,14 @@ export default {
  
     drawChart() {
       Chart.defaults.global.defaultFontFamily = "FZQKBYSJW--GB1-0";
-      var sp_a = this.results.data.result.physiqueResults[0].score;
-      var sp_b = this.results.data.result.physiqueResults[1].score;
-      var sp_c = this.results.data.result.physiqueResults[2].score;
-      var sp_d = this.results.data.result.physiqueResults[3].score;
-      var sp_e = this.results.data.result.physiqueResults[4].score;
-      var sp_f = this.results.data.result.physiqueResults[5].score;
-      var sp_g = this.results.data.result.physiqueResults[6].score;
-      var sp_h = this.results.data.result.physiqueResults[7].score;
+      var sp_a = this.results.results[0];
+      var sp_b = this.results.results[1];
+      var sp_c = this.results.results[2];
+      var sp_d = this.results.results[3];
+      var sp_e = this.results.results[4];
+      var sp_f = this.results.results[5];
+      var sp_g = this.results.results[6];
+      var sp_h = this.results.results[7];
       var ctx = document.getElementById("myChart");
       // eslint-disable-next-line
       var myChart = new Chart(ctx, {
