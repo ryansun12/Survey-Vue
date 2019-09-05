@@ -145,7 +145,7 @@ export default {
       this.datenow = moment().format("dddd, MMMM D");
     },
     option1() {
-      this.vals.push({id:this.results.question.id - 1, value: 1});
+      this.vals.push({id:this.results.question.id, value: 1});
       this.messages.push({
         body: this.results.question.answer1,
         person: "you"});
@@ -156,7 +156,7 @@ export default {
       this.nextQuestion();
     },
     option2() {
-     this.vals.push({id:this.results.question.id - 1, value: 0});
+     this.vals.push({id:this.results.question.id, value: 0});
       this.messages.push({
         body: this.results.question.answer2,
         person: "you"});
@@ -237,7 +237,7 @@ export default {
         }, 1250);
         return;
       }
-            //if finished, submit 
+        //if finished, submit 
       if (this.results.results != null) {
         var d = this;
         setTimeout(function(){d.messages.push({body: "有结果了！", person: "doc"})},500);
